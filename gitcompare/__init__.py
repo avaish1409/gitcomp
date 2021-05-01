@@ -1,25 +1,17 @@
-# import statements
-# cli args
 import argparse
-# webscripts
 import urllib.request
 import json
-# tabulation
 from prettytable import PrettyTable, ALL
-# logging
 import logging
 
 
 # TODO add function descriptions
 
-# get user or repo data
 def user_or_repo(arr, option='user'):
-    # base url
     if option == 'repo':
         base_url = 'https://api.github.com/repos/'
     else:
         base_url = 'https://api.github.com/users/'
-
     raw_data = []
     for i in range(len(arr)):
         with urllib.request.urlopen(base_url + arr[i]) as url:
@@ -29,11 +21,10 @@ def user_or_repo(arr, option='user'):
     return raw_data
 
 
-# get data of all repo of given user(s)
 def all_repo():
     # repo list
     # return list of all repo details
-    return
+    pass
 
 
 # keep only required user/repo details for comparison
@@ -55,11 +46,9 @@ def filter_data(raw_data, option='user'):
     return details
 
 
-# store list to csv file
 def create_csv(arr):
     for i in arr:
         print(', '.join(i))
-        # print(i)
     return
 
 
@@ -90,19 +79,15 @@ def main():
     logger = init_logger()
     arg_parser = init_parser()
     args = arg_parser.parse_args()
-    # calling functions depending on type of argument
     if args.user_names is not None:
-        # print('user analysis')
         logger.info("user analysis")
         data = user_or_repo(args.user_names)
         details = filter_data(data)
     elif args.repo_names is not None:
-        # print('repo analysis')
         logger.info("repo analysis")
         data = user_or_repo(args.repo_names, 'repo')
         details = filter_data(data, 'repo')
     else:
-        # print('no specifications')
         logger.info("no specifications")
         data = user_or_repo(args.user_names)  # just for now
         details = filter_data(data)
@@ -116,8 +101,6 @@ def main():
         for j in range(len(res[0])):
             res[i][j] = str(res[i][j])
 
-    # check output type
-    # return table, html, json or csv
     x = PrettyTable()
     if 'login' in details.keys():
         x.field_names = ["S.No.", "Arg"] + details['login']
@@ -128,19 +111,15 @@ def main():
     x.hrules = ALL
 
     if args.out_type[0] == 'cmd':
-        # print('output to cmd')
         logger.info("output to cmd")
         print(x)
     elif args.out_type[0] == 'csv':
-        # print('output to csv')
         logger.info("output to csv")
         create_csv(res)
     elif args.out_type[0] == 'html':
-        # print('output to html')
         logger.info("output to html")
         print(x.get_html_string())
     elif args.out_type[0] == 'json':
-        # print('output to json')
         logger.info("output to json")
         print(x.get_json_string())
 
