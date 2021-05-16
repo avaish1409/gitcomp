@@ -1,5 +1,9 @@
 import argparse
+import json
+import re
 import logging
+import urllib.request
+from user import User
 
 
 class GitCompare:
@@ -13,10 +17,51 @@ class GitCompare:
     }
     logger: logging.Logger
     arg_parser: argparse.ArgumentParser
+    users: [str]
+    repos: [str]
+    user_data: dict
+    repo_data: dict
+    username_regex = '^[a-zA-Z]+'
+    repo_regex = '^[a-zA-Z]+/^[a-zA-Z]+'
 
-    def __init__(self):
+    def __init__(self, users=None, repos=None):
         self.__init_logger()
         self.__init_arg_parser()
+        self.users = users
+        self.repos = repos
+        self.user_data = {}
+        if self.users is not None:
+            self.user_data = {}
+            self.__fetch_user_data()
+        if self.repos is not None:
+            self.repo_data = {}
+            self.__fetch_repo_data()
+
+    def __fetch_user_data(self):
+        api_route = 'users/'
+        self.__validate_user_names()
+        for user in self.users:
+            with urllib.request.urlopen(f'{self.api_base}{api_route}{user}') as url:
+                self.user_data[user] = User(json.loads(url.read().decode()))
+
+    def __validate_user_names(self):
+        for user in self.users:
+            if not re.match(GitCompare.username_regex, user):
+                raise ValueError(f"""
+                Improper username {user} 
+                """)
+
+    def __fetch_repo_data(self):
+        api_route = 'repos/'
+        self.__validate_repo_string()
+
+    def __validate_repo_string(self):
+        for repo in self.repos:
+            if not re.match(GitCompare.repo_regex, repo):
+                raise ValueError("""
+                Improper repository format.
+                Provide the repository name as: <user-name>/<repository-name>
+                """)
 
     def __init_logger(self):
         """
