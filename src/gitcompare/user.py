@@ -10,7 +10,7 @@ class User:
     public_repos: int
     public_gists: int
 
-    def __init__(self, user_data):
+    def __init__(self, user_data: dict):
         """
         setup a user object containing a user's vital stats, equivalent to using the CLI tool with the -u flag
         :param user_data: the json dictionary we get from calling the GitHub API
