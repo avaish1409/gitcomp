@@ -4,6 +4,7 @@ import re
 import logging
 import urllib.request
 from user import User
+from repository import Repository
 
 
 class GitCompare:
@@ -19,10 +20,10 @@ class GitCompare:
     arg_parser: argparse.ArgumentParser
     users: [str]
     repos: [str]
-    user_data: dict
-    repo_data: dict
-    username_regex = '^[a-zA-Z]+'
-    repo_regex = '^[a-zA-Z]+/^[a-zA-Z]+'
+    user_data: {str: User}
+    repo_data: {str: Repository}
+    username_regex = r'^[a-zA-Z0-9]+'
+    repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
 
     def __init__(self, users=None, repos=None):
         self.__init_logger()
@@ -54,6 +55,9 @@ class GitCompare:
     def __fetch_repo_data(self):
         api_route = 'repos/'
         self.__validate_repo_string()
+        for repo in self.repos:
+            with urllib.request.urlopen(f'{self.api_base}{api_route}{repo}') as url:
+                self.repo_data[repo] = Repository(json.loads(url.read().decode()))
 
     def __validate_repo_string(self):
         for repo in self.repos:
