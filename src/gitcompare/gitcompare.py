@@ -22,8 +22,8 @@ class GitCompare:
     repos: [str]
     user_data: {str: User}
     repo_data: {str: Repository}
-    username_regex = r'^[a-zA-Z0-9]+'
-    repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
+    __username_regex = r'^[a-zA-Z0-9]+'
+    __repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
 
     def __init__(self, users=None, repos=None):
         self.__init_logger()
@@ -47,7 +47,7 @@ class GitCompare:
 
     def __validate_user_names(self):
         for user in self.users:
-            if not re.match(GitCompare.username_regex, user):
+            if not re.match(GitCompare.__username_regex, user):
                 raise ValueError(f"""
                 Improper username {user} 
                 """)
@@ -61,7 +61,7 @@ class GitCompare:
 
     def __validate_repo_string(self):
         for repo in self.repos:
-            if not re.match(GitCompare.repo_regex, repo):
+            if not re.match(GitCompare.__repo_regex, repo):
                 raise ValueError("""
                 Improper repository format.
                 Provide the repository name as: <user-name>/<repository-name>
