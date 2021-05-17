@@ -16,7 +16,7 @@ class Repository:
     watches: int
     language: str
     forks: int
-    license: str
+    license: dict
     archived: bool
     owner: str
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
