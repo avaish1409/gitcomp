@@ -39,11 +39,11 @@ class GitCompare:
             self.__fetch_repo_data()
 
     def __fetch_user_data(self):
-        api_route = 'users/'
         self.__validate_user_names()
+        api_route = 'users/'
         for user in self.users:
-            with urllib.request.urlopen(f'{self.api_base}{api_route}{user}') as url:
-                self.user_data[user] = User(json.loads(url.read().decode()))
+            req = urllib.request.Request(url=f'{self.api_base}{api_route}{user}', headers=GitCompare.headers)
+            self.user_data[user] = User(GitCompare.__make_request(request=req))
 
     def __validate_user_names(self):
         for user in self.users:
@@ -56,8 +56,8 @@ class GitCompare:
         api_route = 'repos/'
         self.__validate_repo_string()
         for repo in self.repos:
-            with urllib.request.urlopen(f'{self.api_base}{api_route}{repo}') as url:
-                self.repo_data[repo] = Repository(json.loads(url.read().decode()))
+            req = urllib.request.Request(url=f'{self.api_base}{api_route}{repo}', headers=GitCompare.headers)
+            self.repo_data[repo] = Repository(GitCompare.__make_request(request=req))
 
     def __validate_repo_string(self):
         for repo in self.repos:
@@ -66,6 +66,12 @@ class GitCompare:
                 Improper repository format.
                 Provide the repository name as: <user-name>/<repository-name>
                 """)
+
+    @staticmethod
+    def __make_request(request: urllib.request.Request):
+        with urllib.request.urlopen(request) as req:
+            data = json.loads(req.read().decode())
+            return data
 
     def __init_logger(self):
         """
@@ -94,7 +100,8 @@ class GitCompare:
                                      help='''
                                      -u, --user <username...>
                                      The GitHub username(s) to query against.
-                                     Multiple usernames can be queried at a time by providing a space separated argument list.
+                                     Multiple usernames can be queried at a time by providing a space separated argument
+                                      list.
                                      ''')
 
         self.arg_parser.add_argument('-r', '--repo', type=str, nargs='+',
