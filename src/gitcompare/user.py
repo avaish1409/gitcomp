@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass(repr=True)
 class User:
     login: str
     followers: int
