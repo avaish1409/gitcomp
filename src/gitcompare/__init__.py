@@ -1,6 +1,6 @@
-from .gitcompare import GitCompare
-from .user import User
-from .repository import Repository
+from gitcompare import GitCompare
+from user import User
+from repository import Repository
 from datetime import datetime
 from urllib import request
 import argparse
