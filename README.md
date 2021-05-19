@@ -4,6 +4,7 @@ A simple python package to compare git users/ repos via github api
 
 [![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![PyPi Download stats](http://pepy.tech/badge/gitcomp)](http://pepy.tech/project/gitcomp)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/avaish1409/gitcomp/releases)
 
 
@@ -41,6 +42,12 @@ You can generate the resultant table in: Plain text, CSV, JSON or HTML format ea
 gitcomp -u avaish1409 -o html
 gitcomp -r avaish1409/VideoChatBot Rohitrajak1807/power-management -o json
 ```
+
+Options:
+- Plain Text ( Default )
+- CSV ( -o csv )
+- JSON ( -o json )
+- HTML ( -o html )
 
 
 # History
