@@ -49,7 +49,6 @@ Options:
 - JSON ( -o json )
 - HTML ( -o html )
 
-
 # History
 
 See release notes for changes https://github.com/avaish1409/gitcomp/releases
