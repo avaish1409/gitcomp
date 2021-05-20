@@ -1,15 +1,15 @@
 from gitcompare import GitCompare
 from user import User
 from repository import Repository
-from utils.custom_json_encoder import CustomJSONEncoder
+from utils.ser_de import to_json_str, to_dict
 import argparse
-import json
 
 __all__ = [
     'GitCompare',
     'User',
     'Repository',
-    'CustomJSONEncoder'
+    'to_dict',
+    'to_json_str'
 ]
 
 
@@ -71,4 +71,7 @@ if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
     g = GitCompare(users=['Rohitrajak1807', 'Rocker2102'], repos=['google/zx', 'Rocker2102/app-monitor'])
-    print(json.dumps(g.__dict__, cls=CustomJSONEncoder, indent=4))
+    ser = to_json_str(g)
+    de = to_dict(g)
+    print(ser)
+    print(de)
