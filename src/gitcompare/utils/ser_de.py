@@ -13,12 +13,14 @@ class Serializer(JSONEncoder):
         """
         if isinstance(o, (datetime.date, datetime.datetime)):
             return o.isoformat()
+        elif isinstance(o, dict):
+            return o
         else:
             return o.__dict__
 
 
 def to_json_str(g: object) -> str:
-    return json.dumps(g.__dict__, cls=Serializer, indent=4)
+    return json.dumps(g, cls=Serializer, indent=4, sort_keys=True)
 
 
 def to_dict(g: object) -> Dict[str, str]:

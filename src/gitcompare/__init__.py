@@ -32,8 +32,8 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                         help='''
                                          -u, --user <username...>
                                          The GitHub username(s) to query against.
-                                         Multiple usernames can be queried at a time by providing a space separated argument
-                                          list.
+                                         Multiple usernames can be queried at a time by providing a space separated
+                                         argument list.
                                          ''')
 
     parser.add_argument('-r', '--repo', type=str, nargs='+',
@@ -71,7 +71,3 @@ if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
     g = GitCompare(users=['Rohitrajak1807', 'Rocker2102'], repos=['google/zx', 'Rocker2102/app-monitor'])
-    ser = to_json_str(g)
-    de = to_dict(g)
-    print(ser)
-    print(de)
