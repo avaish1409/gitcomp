@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 from dataclasses import dataclass
 
 
@@ -19,9 +18,9 @@ class Repository:
     watches: int
     language: str
     forks: int
-    license: Dict[str, str]
     archived: bool
     owner: str
+    license: str = None
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
 
     def __init__(self, repo_data: dict):
@@ -39,6 +38,7 @@ class Repository:
         self.watches = repo_data['watchers_count']
         self.language = repo_data['language']
         self.forks = repo_data['forks_count']
-        self.license = repo_data['license']
         self.archived = repo_data['archived']
         self.owner = repo_data['owner']['login']
+        if repo_data['license'] is not None:
+            self.license = repo_data['license']['name']
