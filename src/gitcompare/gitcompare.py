@@ -5,27 +5,28 @@ import logging
 import urllib.request
 from user import User
 from repository import Repository
+from typing import List, Dict
 
 
 class GitCompare:
-    api_base = 'https://api.github.com/'
+    api_base: str = 'https://api.github.com/'
     """
     explicitly request v3 of the API
     https://docs.github.com/en/rest/overview/resources-in-the-rest-api#current-version
     """
-    headers = {
+    headers: Dict[str, str] = {
         'Accept': 'application/vnd.github.v3+json'
     }
     logger: logging.Logger
     arg_parser: argparse.ArgumentParser
-    users: [str]
-    repos: [str]
-    user_data: {str: User}
-    repo_data: {str: Repository}
+    users: List[str]
+    repos: List[str]
+    user_data: Dict[str, User]
+    repo_data: Dict[str, Repository]
     __username_regex = r'^[a-zA-Z0-9]+'
     __repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
 
-    def __init__(self, users=None, repos=None):
+    def __init__(self, users: List[str] = None, repos: List[str] = None):
         self.__init_logger()
         self.__init_arg_parser()
         self.users = users

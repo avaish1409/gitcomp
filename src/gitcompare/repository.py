@@ -1,6 +1,9 @@
 from datetime import datetime
+from typing import Dict
+from dataclasses import dataclass
 
 
+@dataclass(repr=True)
 class Repository:
     name: str
     full_name: str
@@ -16,7 +19,7 @@ class Repository:
     watches: int
     language: str
     forks: int
-    license: dict
+    license: Dict[str, str]
     archived: bool
     owner: str
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
