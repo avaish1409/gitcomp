@@ -20,7 +20,7 @@ class Repository:
     forks: int
     archived: bool
     owner: str
-    license: str = ''
+    license: str = None
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
 
     def __init__(self, repo_data: dict):
