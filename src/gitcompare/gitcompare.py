@@ -18,8 +18,8 @@ class GitCompare:
     }
     users: List[str]
     repos: List[str]
-    user_data: Dict[str, User]
-    repo_data: Dict[str, Repository]
+    user_data: Dict[str, User] = None
+    repo_data: Dict[str, Repository] = None
     __username_regex = r'^[a-zA-Z0-9]+'
     __repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
 
