@@ -70,4 +70,9 @@ def __get_arg_parser() -> argparse.ArgumentParser:
 if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    g = GitCompare(users=['Rohitrajak1807', 'Rocker2102', 'avaish1409'], repos=['avaish1409/VideoChatBot', 'Rohitrajak1807/power-management', 'Rocker2102/quiz'])
+    #g = GitCompare(users=['Rohitrajak1807', 'Rocker2102', 'avaish1409'], repos=['avaish1409/VideoChatBot', 'Rohitrajak1807/power-management', 'Rocker2102/quiz'])
+    # g = GitCompare(repos=['avaish1409/VideoChatBot', 'Rohitrajak1807/power-management', 'Rocker2102/quiz'], display_type='csv')
+    # g = GitCompare(users=['avaish1409', 'Rohitrajak1807', 'Rocker2102'], display_type='cmd')
+    g = GitCompare(users=args.user_names, repos=args.repo_names, display_type=args.out_type[0])
+    if args.user_names is not None or args.repo_names is not None:
+        print(g.get_table())
