@@ -70,4 +70,4 @@ def __get_arg_parser() -> argparse.ArgumentParser:
 if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    g = GitCompare(users=['Rohitrajak1807', 'Rocker2102'])
+    g = GitCompare(users=['Rohitrajak1807', 'Rocker2102', 'avaish1409'], repos=['avaish1409/VideoChatBot', 'Rohitrajak1807/power-management', 'Rocker2102/quiz'])

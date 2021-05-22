@@ -1,5 +1,6 @@
 from datetime import datetime
 from dataclasses import dataclass
+import sys
 
 
 @dataclass(repr=True)
@@ -40,5 +41,25 @@ class Repository:
         self.forks = repo_data['forks_count']
         self.archived = repo_data['archived']
         self.owner = repo_data['owner']['login']
+        self.license = ''
         if repo_data['license'] is not None:
             self.license = repo_data['license']['name']
+        self.score = self.getScore()
+        print(self.name, self.score)
+
+
+    def featureScore(self, name, val, weight=1, metric={}):
+        fscore = 0
+        for i in metric:
+            if val<=i:
+                fscore = metric[i]
+                break
+        return weight*fscore
+
+    def getScore(self):
+        score=0
+        score += self.featureScore('is_forked', self.forked, 1, {False: 4, True: 1})
+        score += self.featureScore('num_forks', self.forks, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
+        score += self.featureScore('stars', self.stars, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
+        score += self.featureScore('watchers', self.watches, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
+        return (score*100)//16
