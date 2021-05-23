@@ -21,8 +21,12 @@ class Repository:
     forks: int
     archived: bool
     owner: str
+    open_issues: int
+    network_count: int
+    subscribers_count: int
+    git_score: int
     license: str = None
-    display_rows = ['full_name', 'forks', 'open_issues', 'watches', 'network_count', 'subscribers_count', 'score']
+    display_rows = ['full_name', 'forks', 'open_issues', 'watches', 'network_count', 'subscribers_count', 'git_score']
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
     __total_weight = 100/16
     
@@ -44,17 +48,19 @@ class Repository:
         self.forks = repo_data['forks_count']
         self.archived = repo_data['archived']
         self.owner = repo_data['owner']['login']
-        self.license = ''
         self.open_issues =  repo_data['open_issues']
         self.network_count = repo_data['network_count']
         self.subscribers_count = repo_data['subscribers_count']
         if repo_data['license'] is not None:
             self.license = repo_data['license']['name']
-        self.score = self.get_score()
-        print(self.name, self.score)
+        self.git_score = self.get_score()
 
 
     def feature_score(self, name, val, weight=1, metric={}):
+        """
+            calculate score based upon val as compared to metric 
+            Metric caonains max bounds for each value range and corresponing score
+        """
         fscore = 0
         for i in metric:
             if val<=i:
