@@ -7,7 +7,7 @@ from typing import List, Dict
 from prettytable import PrettyTable, ALL
 
 
-class GitCompare:
+class GitComp:
     __api_base: str = 'https://api.github.com/'
     """
     explicitly request v3 of the API
@@ -41,12 +41,12 @@ class GitCompare:
         self.__validate_user_names()
         api_route = 'users/'
         for user in self.users:
-            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{user}', headers=GitCompare.__headers)
-            self.user_data[user] = User(GitCompare.__make_request(request=req))
+            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{user}', headers=GitComp.__headers)
+            self.user_data[user] = User(GitComp.__make_request(request=req))
 
     def __validate_user_names(self):
         for user in self.users:
-            if not re.match(GitCompare.__username_regex, user):
+            if not re.match(GitComp.__username_regex, user):
                 raise ValueError(f"""
                 Improper username {user} 
                 """)
@@ -55,12 +55,12 @@ class GitCompare:
         api_route = 'repos/'
         self.__validate_repo_string()
         for repo in self.repos:
-            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{repo}', headers=GitCompare.__headers)
-            self.repo_data[repo] = Repository(GitCompare.__make_request(request=req))
+            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{repo}', headers=GitComp.__headers)
+            self.repo_data[repo] = Repository(GitComp.__make_request(request=req))
 
     def __validate_repo_string(self):
         for repo in self.repos:
-            if not re.match(GitCompare.__repo_regex, repo):
+            if not re.match(GitComp.__repo_regex, repo):
                 raise ValueError("""
                 Improper repository format.
                 Provide the repository name as: <user-name>/<repository-name>
