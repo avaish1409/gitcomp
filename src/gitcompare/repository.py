@@ -24,8 +24,7 @@ class Repository:
     license: str = None
     display_rows = ['full_name', 'forks', 'open_issues', 'watches', 'network_count', 'subscribers_count', 'score']
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
-    __total_weight = 100/16
-    
+    __total_weight = 100 / 16
 
     def __init__(self, repo_data: dict):
         self.name = repo_data['name']
@@ -45,7 +44,7 @@ class Repository:
         self.archived = repo_data['archived']
         self.owner = repo_data['owner']['login']
         self.license = ''
-        self.open_issues =  repo_data['open_issues']
+        self.open_issues = repo_data['open_issues']
         self.network_count = repo_data['network_count']
         self.subscribers_count = repo_data['subscribers_count']
         if repo_data['license'] is not None:
@@ -53,19 +52,18 @@ class Repository:
         self.score = self.get_score()
         print(self.name, self.score)
 
-
     def feature_score(self, name, val, weight=1, metric={}):
         fscore = 0
         for i in metric:
-            if val<=i:
+            if val <= i:
                 fscore = metric[i]
                 break
-        return weight*fscore
+        return weight * fscore
 
     def get_score(self):
-        score=0
+        score = 0
         score += self.feature_score('is_forked', self.forked, 1, {False: 4, True: 1})
         score += self.feature_score('num_forks', self.forks, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
         score += self.feature_score('stars', self.stars, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
         score += self.feature_score('watchers', self.watches, 1, {0: 1, 3: 2, 10: 3, sys.maxsize: 4})
-        return int(score*Repository.__total_weight)
+        return int(score * Repository.__total_weight)
