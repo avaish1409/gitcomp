@@ -1,11 +1,11 @@
-from gitcompare import GitCompare
+from gitcomp import GitComp
 from user import User
 from repository import Repository
 from utils.ser_de import to_json_str, to_dict
 import argparse
 
 __all__ = [
-    'GitCompare',
+    'GitComp',
     'User',
     'Repository',
     'to_dict',
@@ -23,7 +23,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
             :return: argparse.ArgumentParser
             """
     parser = argparse.ArgumentParser(description='''
-            gitcompare
+            gitcomp
             A CLI utility to compare the vital stats of GitHub repositories
             ''')
 
@@ -65,5 +65,5 @@ if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
     if args.user_names is not None or args.repo_names is not None:
-        g = GitCompare(users=args.user_names, repos=args.repo_names, display_type=args.out_type[0])
+        g = GitComp(users=args.user_names, repos=args.repo_names, display_type=args.out_type[0])
         print(g.get_table())
