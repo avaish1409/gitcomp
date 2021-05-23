@@ -47,7 +47,7 @@ class Repository:
         self.forks = repo_data['forks_count']
         self.archived = repo_data['archived']
         self.owner = repo_data['owner']['login']
-        self.open_issues =  repo_data['open_issues']
+        self.open_issues = repo_data['open_issues']
         self.network_count = repo_data['network_count']
         self.subscribers_count = repo_data['subscribers_count']
         if repo_data['license'] is not None:

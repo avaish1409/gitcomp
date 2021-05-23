@@ -15,8 +15,9 @@ class User:
     public_repos: int
     public_gists: int
     git_score: int
-    display_rows = ['login', 'followers', 'following', 'site_admin', 'name', 'company', 'blog', 'location', 'public_repos', 'public_gists', 'git_score']
-    __total_weight = 100/16
+    display_rows = ['login', 'followers', 'following', 'site_admin', 'name', 'company', 'blog', 'location',
+                    'public_repos', 'public_gists', 'git_score']
+    __total_weight = 100 / 16
 
     def __init__(self, user_data: dict):
         """
