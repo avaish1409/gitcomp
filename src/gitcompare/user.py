@@ -14,9 +14,9 @@ class User:
     location: str
     public_repos: int
     public_gists: int
-    display_rows = ['login', 'followers', 'following', 'site_admin', 'name', 'company', 'blog', 'location',
-                    'public_repos', 'public_gists', 'score']
-    __total_weight = 100 / 16
+    git_score: int
+    display_rows = ['login', 'followers', 'following', 'site_admin', 'name', 'company', 'blog', 'location', 'public_repos', 'public_gists', 'git_score']
+    __total_weight = 100/16
 
     def __init__(self, user_data: dict):
         """
@@ -35,8 +35,7 @@ class User:
         self.public_gists = user_data['public_gists']
         self.num_organizations = len(user_data['organizations_url'])
         # self.features = []
-        self.score = self.get_score()
-        print(self.name, self.score)
+        self.git_score = self.get_score()
 
     def feature_score(self, name, val, weight=1, metric={}):
         fscore = 0
