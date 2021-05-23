@@ -58,16 +58,12 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          json: Show the result as JSON
                                          ''')
 
-    parser.add_argument('-o', '--output', type=str, nargs=1, metavar='output_file', dest='output_file',
-                        help='''
-                                         -o, --output <file>
-                                         Write the output to a file instead of STDOUT
-                                         '''
-                        )
     return parser
 
 
 if __name__ == '__main__':
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    g = GitCompare(users=['Rohitrajak1807', 'Rocker2102'])
+    if args.user_names is not None or args.repo_names is not None:
+        g = GitCompare(users=args.user_names, repos=args.repo_names, display_type=args.out_type[0])
+        print(g.get_table())
