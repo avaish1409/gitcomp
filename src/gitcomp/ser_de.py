@@ -56,7 +56,3 @@ class Writer:
         writer = self.__get_writer()
         attr = getattr(self.obj, self.prop)
         writer(attr, self.out_file)
-
-
-if __name__ == '__main__':
-    pass

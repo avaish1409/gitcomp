@@ -41,13 +41,14 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                         metavar='output_t', default='json', dest='out_type',
                         help='''
                                          -t, --type <type>
-                                         Default: cmd
-                                         Choose the format of output. All output is dumped to STDOUT
+                                         Default: json
+                                         Choose the format of output. All output is dumped to STDOUT unless output file
+                                         is specified using -o, --output flag.
                                          The types available are:
-                                         ascii: Show the result as an ASCII table
-                                         csv: Format the output to csv
-                                         html: Show output as html
                                          json: Show the result as JSON
+                                         csv: Format the output to csv
+                                         ascii: Show the result as an ASCII table
+                                         html: Show output as html
                                          ''')
 
     parser.add_argument('-o', '--output', type=str, nargs=1, metavar='out', dest='output_file',
