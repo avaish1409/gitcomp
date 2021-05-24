@@ -1,8 +1,8 @@
 import json
 import re
 import urllib.request
-from user import User
-from repository import Repository
+from .user import User
+from .repository import Repository
 from typing import List, Dict
 from prettytable import PrettyTable, ALL
 
