@@ -1,16 +1,6 @@
 from .gitcomp_core import GitComp
-from .user import User
-from .repository import Repository
-from .ser_de import to_json_str, to_dict
+from .ser_de import Writer
 import argparse
-
-__all__ = [
-    'GitComp',
-    'User',
-    'Repository',
-    'to_dict',
-    'to_json_str'
-]
 
 
 def __get_arg_parser() -> argparse.ArgumentParser:
@@ -18,7 +8,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
             initializes an arg_parser with
             --user/-u
             --repo/-r
-            --type/-o
+            --type/-t
             flags
             :return: argparse.ArgumentParser
             """
@@ -27,46 +17,73 @@ def __get_arg_parser() -> argparse.ArgumentParser:
             A CLI utility to compare the vital stats of GitHub repositories
             ''')
 
-    parser.add_argument('-u', '--user', type=str, nargs='+',
-                        metavar='user_name', default=None, dest='user_names',
-                        help='''
+    mutually_exclusive = parser.add_mutually_exclusive_group()
+
+    mutually_exclusive.add_argument('-u', '--user', type=str, nargs='+',
+                                    metavar='user_name', default=None, dest='user_names',
+                                    help='''
                                          -u, --user <username...>
                                          The GitHub username(s) to query against.
                                          Multiple usernames can be queried at a time by providing a space separated
                                          argument list.
                                          ''')
 
-    parser.add_argument('-r', '--repo', type=str, nargs='+',
-                        metavar='repo', default=None, dest='repo_names',
-                        help='''
+    mutually_exclusive.add_argument('-r', '--repo', type=str, nargs='+',
+                                    metavar='repo', default=None, dest='repo_names',
+                                    help='''
                                          -r, --repo <repo>
                                          The public GitHub repository to query against where repo takes the form:
                                          <user/repo>
                                          Example: -r octocat/Spoon-Knife
                                          ''')
 
-    parser.add_argument('-t', '--type', type=str, nargs=1,
-                        metavar='output_dest', default=['cmd'], dest='out_type',
+    parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv'],
+                        metavar='output_t', default='json', dest='out_type',
                         help='''
                                          -t, --type <type>
                                          Default: cmd
                                          Choose the format of output. All output is dumped to STDOUT
                                          The types available are:
-                                         cmd: Show the result as an ASCII table
+                                         ascii: Show the result as an ASCII table
                                          csv: Format the output to csv
                                          html: Show output as html
                                          json: Show the result as JSON
                                          ''')
 
+    parser.add_argument('-o', '--output', type=str, nargs=1, metavar='out', dest='output_file',
+                        help='''
+                            -o, --output <out_file>
+                            Output to out_file, defaults to STDOUT.
+                        '''
+                        )
+
     return parser
 
 
 def main():
+    propmap = {
+        'users': 'user_data',
+        'repos': 'repo_data'
+    }
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    if args.user_names is not None or args.repo_names is not None:
-        g = GitComp(users=args.user_names, repos=args.repo_names, display_type=args.out_type[0])
-        print(g.get_table())
+    g = GitComp(users=args.user_names, repos=args.repo_names)
+    # TODO cleanup
+    # start cleanup
+    prop = None
+    tp = None
+    out = None
+    if args.user_names is not None:
+        prop = propmap['users']
+    elif args.repo_names is not None:
+        prop = propmap['repos']
+    if args.out_type is not None:
+        tp = args.out_type[0]
+    if args.output_file is not None:
+        out = args.output_file[0]
+    # end cleanup
+    w = Writer(obj=g, tp=tp, out_file=out, prop=prop)
+    w.write()
 
 
 if __name__ == '__main__':
