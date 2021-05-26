@@ -11,43 +11,77 @@ A simple python package to compare git users/ repos via github api
 # Installation
  
 Install via pip:
-```
+```shell
 pip install gitcomp
 ```
-
-# How to use gitcomp
-
-## Compare Github User profiles
-
-You can use a command in following manner by replacing with desired username. You may compare any number of users simultaneously by providing their username. Example:
-
 ```
-gitcomp -u avaish1409 Rohitrajak1807
-```
+usage: gitcomp [-h] [-u user_name [user_name ...] | -r repo [repo ...]] [-t output_t] [-o out]
 
-## Compare Github Repositories
+gitcomp A CLI utility to compare the vital stats of GitHub repositories
 
-You can use a command in following manner by replacing with desired username and repository names. You may compare any number of repositoryies simultaneously by providing their credentials. Example:
-
-```
-gitcomp -r avaish1409/VideoChatBot Rohitrajak1807/power-management
-```
-
-
-## Specify output type
-
-You can generate the resultant table in: Plain text, CSV, JSON or HTML format easily via specifying output parameter (-o). Example:
-
-```
-gitcomp -u avaish1409 -o html
-gitcomp -r avaish1409/VideoChatBot Rohitrajak1807/power-management -o json
+optional arguments:
+  -h, --help            show this help message and exit
+  
+  -u user_name [user_name ...], --user user_name [user_name ...]
+                        -u, --user <username...> The GitHub username(s) to query against. Multiple usernames can be
+                        queried at a time by providing a space separated argument list.
+                        
+  -r repo [repo ...], --repo repo [repo ...]
+                        -r, --repo <repo> The public GitHub repository to query against where repo takes the form:
+                        <user/repo> Example: -r octocat/Spoon-Knife
+                        
+  -t output_t, --type output_t
+                        -t, --type <type> Default: ascii. Choose the format of output. 
+                        All output is dumped to STDOUT unless output file is specified using -o, --output flag.
+                        The types available are: json: Show the result as JSON
+                                                 csv: Format the output to CSV 
+                                                 ascii: Show the result as an ASCII Table 
+                                                 html: Show output as HTML Table
+                                                 
+  -o out, --output out  -o, --output <out_file> Output to out_file, defaults to STDOUT.
 ```
 
-Options:
-- Plain Text ( Default )
-- CSV ( -o csv )
-- JSON ( -o json )
-- HTML ( -o html )
+# Examples
+
+## Comparing Users
+```shell
+gitcomp -u Rohitrajak1807 avaish1409
+```
+## Comparing Repositories
+```shell
+gitcomp -r avaish1409/VideoChatBot Rohitrajak1807/algorithms
+```
+## Specifying output type
+- ASCII Table (Default)
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t ASCII
+```
+- JSON
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t json
+```
+- CSV
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t csv
+```
+- HTML Table
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t html
+```
+
+## Specifying output file
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t json -o res.json
+```
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t csv -o csv.json
+```
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -t html -o res.html
+```
+```shell
+gitcomp -u Rohitrajak1807 avaish1409 -o res.txt
+```
 
 # History
 
