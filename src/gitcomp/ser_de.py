@@ -4,7 +4,8 @@ import csv
 from json import JSONEncoder
 from typing import Any, Dict, List, Union
 from sys import stdout
-from prettytable import PrettyTable, PLAIN_COLUMNS
+from tabulate import tabulate
+
 from .user import User
 from .repository import Repository
 
@@ -64,13 +65,6 @@ class Writer:
         members = list(g.keys())
         return list(g[members[0]].keys())
 
-    @staticmethod
-    def get_entries_as_rows(g: Dict[str, Any]) -> List[Any]:
-        rows = []
-        for entry in g.keys():
-            rows.append(list(g[entry].values()))
-        return rows
-
     def get_file_handle(self):
         if self.out_file is not stdout:
             return open(self.out_file, 'w')
@@ -91,32 +85,41 @@ class Writer:
             writer.writerow(dict_obj[entry])
         Writer.close_file_handle(file_handle)
 
-    @staticmethod
-    def __get_table(g: object):
-        dict_repr = Writer.to_dict(g)
-        headers = Writer.get_headers(dict_repr)
-        rows = Writer.get_entries_as_rows(dict_repr)
-        table_writer = PrettyTable()
-        table_writer.field_names = headers
-        table_writer.add_rows(rows)
-        table_writer.set_style(PLAIN_COLUMNS)
-        return table_writer
+    def __get_writer(self):
+        return self.writers[self.type]
+
+    def __get_table_headers(self) -> List[str]:
+        return sorted(self.display_rows)
 
     def to_ascii_table(self, g: object):
         file_handle = self.get_file_handle()
-        table_writer = self.__get_table(g)
-        file_handle.write(table_writer.get_string(fields=self.display_rows))
+        headers, rows = self.__get_table(g)
+        table = tabulate(rows, headers=self.__get_table_headers(), tablefmt='plain')
+        file_handle.write(table)
         Writer.close_file_handle(file_handle)
 
     def to_html_table(self, g: object):
         file_handle = self.get_file_handle()
-        table_writer = self.__get_table(g)
-        table_writer.format = True
-        file_handle.write(table_writer.get_html_string(fields=self.display_rows))
+        headers, rows = self.__get_table(g)
+        table = tabulate(rows, headers=headers, tablefmt='html')
+        file_handle.write(table)
         Writer.close_file_handle(file_handle)
 
-    def __get_writer(self):
-        return self.writers[self.type]
+    def __get_table(self, g: object):
+        headers = self.__get_table_headers()
+        dict_repr = Writer.to_dict(g)
+        rows = Writer.get_entries_as_rows(dict_repr, headers)
+        return headers, rows
+
+    @staticmethod
+    def get_entries_as_rows(g: Dict[str, Any], attrs: List[str]) -> List[List[Any]]:
+        rows = []
+        for entry in g.keys():
+            row = []
+            for field in attrs:
+                row.append(g[entry][field])
+            rows.append(row)
+        return rows
 
     def write(self):
         writer = self.__get_writer()
