@@ -38,10 +38,10 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          ''')
 
     parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii'],
-                        metavar='output_t', default='json', dest='out_type',
+                        metavar='output_t', default='ascii', dest='out_type',
                         help='''
                                          -t, --type <type>
-                                         Default: json
+                                         Default: ascii
                                          Choose the format of output. All output is dumped to STDOUT unless output file
                                          is specified using -o, --output flag.
                                          The types available are:
@@ -79,7 +79,7 @@ def main():
     elif args.repo_names is not None:
         prop = propmap['repos']
     if args.out_type is not None:
-        tp = args.out_type[0]
+        tp = args.out_type
     if args.output_file is not None:
         out = args.output_file[0]
     # end cleanup

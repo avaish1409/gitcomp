@@ -2,9 +2,11 @@ import datetime
 import json
 import csv
 from json import JSONEncoder
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 from sys import stdout
-from prettytable import PrettyTable
+from prettytable import PrettyTable, PLAIN_COLUMNS
+from .user import User
+from .repository import Repository
 
 
 class Serializer(JSONEncoder):
@@ -28,6 +30,11 @@ class Writer:
     type: str
     out_file: Any = stdout
     writers: Dict[str, callable]
+    display_rows: List[str]
+    prop_map: Dict[str, Union[User, Repository]] = {
+        'user_data': User,
+        'repo_data': Repository
+    }
 
     def __init__(self, prop, obj, tp, out_file):
         self.obj = obj
@@ -40,6 +47,7 @@ class Writer:
         }
         if out_file is not None:
             self.out_file = out_file
+        self.display_rows = Writer.prop_map[prop].display_rows
 
     @staticmethod
     def close_file_handle(handle):
@@ -90,7 +98,8 @@ class Writer:
         table_writer = PrettyTable()
         table_writer.field_names = headers
         table_writer.add_rows(rows)
-        file_handle.write(table_writer.get_string())
+        table_writer.set_style(PLAIN_COLUMNS)
+        file_handle.write(table_writer.get_string(fields=self.display_rows))
         Writer.close_file_handle(file_handle)
 
     def __get_writer(self):
