@@ -23,16 +23,19 @@ optional arguments:
   -h, --help            show this help message and exit
   
   -u user_name [user_name ...], --user user_name [user_name ...]
-                        -u, --user <username...> The GitHub username(s) to query against. Multiple usernames can be
-                        queried at a time by providing a space separated argument list.
+                        -u, --user <username...> The GitHub username(s) to query against.
+                        Multiple usernames can be queried at a time by providing a space
+                        separated argument list.
                         
   -r repo [repo ...], --repo repo [repo ...]
-                        -r, --repo <repo> The public GitHub repository to query against where repo takes the form:
-                        <user/repo> Example: -r octocat/Spoon-Knife
+                        -r, --repo <repo> The public GitHub repository to query against
+                        where repo takes the form: <user/repo>
+                        Example: -r octocat/Spoon-Knife
                         
   -t output_t, --type output_t
                         -t, --type <type> Default: ascii. Choose the format of output. 
-                        All output is dumped to STDOUT unless output file is specified using -o, --output flag.
+                        All output is dumped to STDOUT unless output file is specified
+                        using -o, --output flag.
                         The types available are: json: Show the result as JSON
                                                  csv: Format the output to CSV 
                                                  ascii: Show the result as an ASCII Table 
