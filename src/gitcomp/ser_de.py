@@ -43,7 +43,8 @@ class Writer:
         self.writers = {
             'json': self.to_json,
             'csv': self.to_csv,
-            'ascii': self.to_ascii_table
+            'ascii': self.to_ascii_table,
+            'html': self.to_html_table
         }
         if out_file is not None:
             self.out_file = out_file
@@ -90,8 +91,8 @@ class Writer:
             writer.writerow(dict_obj[entry])
         Writer.close_file_handle(file_handle)
 
-    def to_ascii_table(self, g: object):
-        file_handle = self.get_file_handle()
+    @staticmethod
+    def __get_table(g: object):
         dict_repr = Writer.to_dict(g)
         headers = Writer.get_headers(dict_repr)
         rows = Writer.get_entries_as_rows(dict_repr)
@@ -99,7 +100,19 @@ class Writer:
         table_writer.field_names = headers
         table_writer.add_rows(rows)
         table_writer.set_style(PLAIN_COLUMNS)
+        return table_writer
+
+    def to_ascii_table(self, g: object):
+        file_handle = self.get_file_handle()
+        table_writer = self.__get_table(g)
         file_handle.write(table_writer.get_string(fields=self.display_rows))
+        Writer.close_file_handle(file_handle)
+
+    def to_html_table(self, g: object):
+        file_handle = self.get_file_handle()
+        table_writer = self.__get_table(g)
+        table_writer.format = True
+        file_handle.write(table_writer.get_html_string(fields=self.display_rows))
         Writer.close_file_handle(file_handle)
 
     def __get_writer(self):

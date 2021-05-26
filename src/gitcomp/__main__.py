@@ -37,7 +37,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          Example: -r octocat/Spoon-Knife
                                          ''')
 
-    parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii'],
+    parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii', 'html'],
                         metavar='output_t', default='ascii', dest='out_type',
                         help='''
                                          -t, --type <type>
@@ -79,7 +79,7 @@ def main():
     elif args.repo_names is not None:
         prop = propmap['repos']
     if args.out_type is not None:
-        tp = args.out_type
+        tp = args.out_type[0]
     if args.output_file is not None:
         out = args.output_file[0]
     # end cleanup
