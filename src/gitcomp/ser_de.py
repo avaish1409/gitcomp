@@ -1,7 +1,8 @@
 import datetime
 import json
+import csv
 from json import JSONEncoder
-from typing import Any, Dict
+from typing import Any, Dict, List
 from sys import stdout
 
 
@@ -20,39 +21,62 @@ class Serializer(JSONEncoder):
             return o.__dict__
 
 
-def to_json(g: object, dest):
-    file_handle = dest
-    if dest is not stdout:
-        file_handle = open(dest, 'w')
-    json.dump(g, file_handle, cls=Serializer, indent=4, sort_keys=True)
-
-
-def to_dict(g: object) -> Dict[str, str]:
-    return json.loads(json.dumps(g, cls=Serializer, indent=4, sort_keys=True))
-
-
-WRITERS = {
-    'json': to_json
-}
-
-
 class Writer:
     obj: object
     prop: str
     type: str
     out_file: Any = stdout
+    writers: Dict[str, callable]
 
     def __init__(self, prop, obj, tp, out_file):
         self.obj = obj
         self.prop = prop
         self.type = tp
+        self.writers = {
+            'json': self.to_json,
+            'csv': self.to_csv
+        }
         if out_file is not None:
             self.out_file = out_file
 
+    @staticmethod
+    def close_file_handle(handle):
+        if handle is not stdout:
+            handle.close()
+
+    @staticmethod
+    def to_dict(g: object) -> Dict[str, Any]:
+        return json.loads(json.dumps(g, cls=Serializer, indent=4, sort_keys=True))
+
+    @staticmethod
+    def get_headers(g: Dict[str, Any]) -> List[str]:
+        members = list(g.keys())
+        return list(g[members[0]].keys())
+
+    def get_file_handle(self):
+        if self.out_file is not stdout:
+            return open(self.out_file, 'w')
+        return self.out_file
+
+    def to_json(self, g: object):
+        file_handle = self.get_file_handle()
+        json.dump(g, file_handle, cls=Serializer, indent=4, sort_keys=True)
+        self.close_file_handle(file_handle)
+
+    def to_csv(self, g: object):
+        file_handle = self.get_file_handle()
+        dict_obj = Writer.to_dict(g)
+        headers = Writer.get_headers(dict_obj)
+        writer = csv.DictWriter(file_handle, fieldnames=headers)
+        writer.writeheader()
+        for entry in dict_obj.keys():
+            writer.writerow(dict_obj[entry])
+        Writer.close_file_handle(file_handle)
+
     def __get_writer(self):
-        return WRITERS[self.type]
+        return self.writers[self.type]
 
     def write(self):
         writer = self.__get_writer()
         attr = getattr(self.obj, self.prop)
-        writer(attr, self.out_file)
+        writer(attr)
