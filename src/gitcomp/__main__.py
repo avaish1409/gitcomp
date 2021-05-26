@@ -37,7 +37,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          Example: -r octocat/Spoon-Knife
                                          ''')
 
-    parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv'],
+    parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii'],
                         metavar='output_t', default='json', dest='out_type',
                         help='''
                                          -t, --type <type>
