@@ -38,7 +38,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          ''')
 
     parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii', 'html'],
-                        metavar='output_t', default='ascii', dest='out_type',
+                        metavar='output_t', default=['ascii'], dest='out_type',
                         help='''
                                          -t, --type <type>
                                          Default: ascii
