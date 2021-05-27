@@ -22,39 +22,39 @@ def __get_arg_parser() -> argparse.ArgumentParser:
     mutually_exclusive.add_argument('-u', '--user', type=str, nargs='+',
                                     metavar='user_name', default=None, dest='user_names',
                                     help='''
-                                         -u, --user <username...>
-                                         The GitHub username(s) to query against.
+                                         -u, --user <username...>\n
+                                         The GitHub username(s) to query against.\n
                                          Multiple usernames can be queried at a time by providing a space separated
-                                         argument list.
+                                         argument list.\n
                                          ''')
 
     mutually_exclusive.add_argument('-r', '--repo', type=str, nargs='+',
                                     metavar='repo', default=None, dest='repo_names',
                                     help='''
-                                         -r, --repo <repo>
-                                         The public GitHub repository to query against where repo takes the form:
-                                         <user/repo>
-                                         Example: -r octocat/Spoon-Knife
+                                         -r, --repo <repo>\n
+                                         The public GitHub repository to query against where repo takes the form:\n
+                                         <user/repo>.\n
+                                         Example: -r octocat/Spoon-Knife\n
                                          ''')
 
     parser.add_argument('-t', '--type', type=str, nargs=1, choices=['json', 'csv', 'ascii', 'html'],
                         metavar='output_t', default=['ascii'], dest='out_type',
                         help='''
-                                         -t, --type <type>
-                                         Default: ascii
+                                         -t, --type <type>\n
+                                         Default: ascii\n
                                          Choose the format of output. All output is dumped to STDOUT unless output file
-                                         is specified using -o, --output flag.
-                                         The types available are:
-                                         json: Show the result as JSON
-                                         csv: Format the output to csv
-                                         ascii: Show the result as an ASCII table
-                                         html: Show output as html
+                                         is specified using -o, --output flag.\n
+                                         The types available are:\n
+                                         json: Show the result as JSON.\n
+                                         csv: Show the output as csv.\n
+                                         ascii: Show the result as an ASCII table.\n
+                                         html: Show output as HTML table.\n
                                          ''')
 
     parser.add_argument('-o', '--output', type=str, nargs=1, metavar='out', dest='output_file',
                         help='''
-                            -o, --output <out_file>
-                            Output to out_file, defaults to STDOUT.
+                            -o, --output <out_file>\n
+                            Output to out_file, defaults to STDOUT.\n
                         '''
                         )
 

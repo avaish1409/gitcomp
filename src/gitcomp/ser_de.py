@@ -5,6 +5,7 @@ from json import JSONEncoder
 from typing import Any, Dict, List, Union
 from sys import stdout
 from prettytable import PrettyTable, PLAIN_COLUMNS
+from tabulate import tabulate
 from .user import User
 from .repository import Repository
 

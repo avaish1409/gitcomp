@@ -56,6 +56,9 @@ class User:
         score += self.feature_score('num_gists', self.public_gists, 1, {0: 1, 4: 2, 10: 3, sys.maxsize: 4})
         # todo-> stars given
         # todo-> stars recieved
-        score += self.feature_score('follow_ratio', self.followers / self.following, 1,
-                                    {0.99: 1, 1: 2, 2: 3, sys.maxsize: 4})
+        try:
+            score += self.feature_score('follow_ratio', self.followers / self.following, 1,
+                                        {0.99: 1, 1: 2, 2: 3, sys.maxsize: 4})
+        except ZeroDivisionError:
+            pass
         return int(score * User.__total_weight)
