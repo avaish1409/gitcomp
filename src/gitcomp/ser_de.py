@@ -4,8 +4,8 @@ import csv
 from json import JSONEncoder
 from typing import Any, Dict, List, Union
 from sys import stdout
+from prettytable import PrettyTable, PLAIN_COLUMNS
 from tabulate import tabulate
-
 from .user import User
 from .repository import Repository
 
@@ -36,6 +36,7 @@ class Writer:
         'user_data': User,
         'repo_data': Repository
     }
+    __ascii_threshold = 4
 
     def __init__(self, prop, obj, tp, out_file):
         self.obj = obj
@@ -65,6 +66,13 @@ class Writer:
         members = list(g.keys())
         return list(g[members[0]].keys())
 
+    @staticmethod
+    def get_entries_as_rows(g: Dict[str, Any]) -> List[Any]:
+        rows = []
+        for entry in g.keys():
+            rows.append(list(g[entry].values()))
+        return rows
+
     def get_file_handle(self):
         if self.out_file is not stdout:
             return open(self.out_file, 'w')
@@ -85,41 +93,57 @@ class Writer:
             writer.writerow(dict_obj[entry])
         Writer.close_file_handle(file_handle)
 
-    def __get_writer(self):
-        return self.writers[self.type]
+    def get_transpose(g, rows, headers):
+        new_rows = []
+        new_headers = ['Argument'] + list(g.keys())
+        for i in range(len(rows[0])):
+            new_rows.append([rows[j][i] for j in range(len(rows))])
+        for i in range(len(new_rows)):
+            new_rows[i] = [headers[i]] + new_rows[i]
+        return new_rows, new_headers
 
-    def __get_table_headers(self) -> List[str]:
-        return sorted(self.display_rows)
+    @staticmethod
+    def __get_table_transpose(g: object):
+        dict_repr = Writer.to_dict(g)
+        headers = Writer.get_headers(dict_repr)
+        rows = Writer.get_entries_as_rows(dict_repr)
+        table_writer = PrettyTable()
+        trans = Writer.get_transpose(g, rows, headers)
+        table_writer.field_names = trans[1]
+        table_writer.add_rows(trans[0])
+        return table_writer
+
+
+    @staticmethod
+    def __get_table(g: object):
+        dict_repr = Writer.to_dict(g)
+        headers = Writer.get_headers(dict_repr)
+        rows = Writer.get_entries_as_rows(dict_repr)
+        table_writer = PrettyTable()
+        table_writer.field_names = headers
+        table_writer.add_rows(rows)
+        table_writer.set_style(PLAIN_COLUMNS)
+        return table_writer
 
     def to_ascii_table(self, g: object):
         file_handle = self.get_file_handle()
-        headers, rows = self.__get_table(g)
-        table = tabulate(rows, headers=self.__get_table_headers(), tablefmt='plain')
-        file_handle.write(table)
+        if len(g.keys()) < Writer.__ascii_threshold:
+            table_writer = self.__get_table_transpose(g)
+            file_handle.write(table_writer.get_string())
+        else:
+            table_writer = self.__get_table(g)
+            file_handle.write(table_writer.get_string(fields=self.display_rows))
         Writer.close_file_handle(file_handle)
 
     def to_html_table(self, g: object):
         file_handle = self.get_file_handle()
-        headers, rows = self.__get_table(g)
-        table = tabulate(rows, headers=headers, tablefmt='html')
-        file_handle.write(table)
+        table_writer = self.__get_table(g)
+        table_writer.format = True
+        file_handle.write(table_writer.get_html_string(fields=self.display_rows))
         Writer.close_file_handle(file_handle)
 
-    def __get_table(self, g: object):
-        headers = self.__get_table_headers()
-        dict_repr = Writer.to_dict(g)
-        rows = Writer.get_entries_as_rows(dict_repr, headers)
-        return headers, rows
-
-    @staticmethod
-    def get_entries_as_rows(g: Dict[str, Any], attrs: List[str]) -> List[List[Any]]:
-        rows = []
-        for entry in g.keys():
-            row = []
-            for field in attrs:
-                row.append(g[entry][field])
-            rows.append(row)
-        return rows
+    def __get_writer(self):
+        return self.writers[self.type]
 
     def write(self):
         writer = self.__get_writer()
