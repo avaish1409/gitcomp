@@ -4,7 +4,6 @@ import urllib.request
 from .user import User
 from .repository import Repository
 from typing import List, Dict
-from prettytable import PrettyTable, ALL
 
 
 class GitComp:
@@ -22,12 +21,10 @@ class GitComp:
     repo_data: Dict[str, Repository] = None
     __username_regex = r'^[a-zA-Z0-9]+'
     __repo_regex = r'^[A-Za-z0-9]+/[A-Za-z0-9]+'
-    display_type: str
 
-    def __init__(self, users: List[str] = None, repos: List[str] = None, display_type: str = 'cmd'):
+    def __init__(self, users: List[str] = None, repos: List[str] = None):
         self.users = users
         self.repos = repos
-        self.display_type = display_type
         self.user_data = {}
         if self.users is not None:
             self.user_data = {}
@@ -35,7 +32,6 @@ class GitComp:
         if self.repos is not None:
             self.repo_data = {}
             self.__fetch_repo_data()
-        self.table = self.create_table()
 
     def __fetch_user_data(self):
         self.__validate_user_names()
@@ -71,42 +67,3 @@ class GitComp:
         with urllib.request.urlopen(request) as req:
             data = json.loads(req.read().decode())
             return data
-
-    def create_table(self):
-        table = PrettyTable()
-        rows = []
-        if self.repos is not None:
-            display_rows = Repository.display_rows
-            table.field_names = ["S.No.", "Arg"] + self.repos
-            entity_set = self.repo_data.values()
-        else:
-            display_rows = User.display_rows
-            table.field_names = ["S.No.", "Arg"] + self.users
-            entity_set = self.user_data.values()
-        for attr in display_rows:
-            row = [len(rows), attr]
-            for entity in entity_set:
-                row.append(entity.__dict__[attr])
-            rows.append(row)
-
-        table.add_rows(rows)
-        table.sortby = None
-        table.hrules = ALL
-        return self.get_result(table)
-
-    def get_result(self, table):
-        if self.display_type == 'cmd':
-            return table.get_string()
-        elif self.display_type == 'csv':
-            return table.get_csv_string()
-        elif self.display_type == 'html':
-            return table.get_html_string()
-        elif self.display_type == 'json':
-            return table.get_json_string()
-        raise ValueError("""
-                Improper output format.
-                Provide the output type as: cmd, csv, html or json
-                """)
-
-    def get_table(self):
-        return self.table
