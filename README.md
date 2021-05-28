@@ -1,6 +1,10 @@
 # gitcomp
 
-A simple python package to compare git users/ repos via github api
+A simple python package with a CLI to compare GitHub users and repositories by associating a ```git_score``` to each 
+entry which is a weighted sum of features mapped to a score. ```git_score``` for a **user** is calculated on the basis of 
+**followers, followers to following ratio, number of public gists and number of organisations** a user is part of.
+For a **public repository**, the determining factors are **number of forks, if the repository itself is forked or not,
+number of stars and number of watchers**.
 
 [![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![PyPi Download stats](http://pepy.tech/badge/gitcomp)](http://pepy.tech/project/gitcomp)
