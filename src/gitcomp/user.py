@@ -1,3 +1,5 @@
+import json
+import urllib.request
 from dataclasses import dataclass
 import sys
 
@@ -15,6 +17,7 @@ class User:
     public_repos: int
     public_gists: int
     git_score: int
+    organizations: int
     display_rows = ['login', 'followers', 'following', 'site_admin', 'name', 'company', 'blog', 'location',
                     'public_repos', 'public_gists', 'git_score']
     __total_weight = 100 / 16
@@ -34,9 +37,15 @@ class User:
         self.location = user_data['location']
         self.public_repos = user_data['public_repos']
         self.public_gists = user_data['public_gists']
-        self.num_organizations = len(user_data['organizations_url'])
-        # self.features = []
+        self.organizations = self.__get_orgs_len(user_data['organizations_url'])
         self.git_score = self.get_score()
+
+    @staticmethod
+    def __get_orgs_len(url: str):
+        api_end_point = url
+        with urllib.request.urlopen(api_end_point) as req:
+            data = json.loads(req.read().decode())
+            return len(data)
 
     def feature_score(self, name, val, weight=1, metric={}):
         fscore = 0
@@ -50,7 +59,7 @@ class User:
         score = 0
         score += self.feature_score('num_followers', self.followers, 1, {10: 1, 25: 2, 50: 3, sys.maxsize: 4})
         # todo-> contrib/ time
-        score += self.feature_score('num_organizaitions', self.num_organizations, 1,
+        score += self.feature_score('num_organizaitions', self.organizations, 1,
                                     {0: 1, 3: 2, 7: 4, 10: 3, sys.maxsize: 2})
         # todo-> repos: forked/org
         score += self.feature_score('num_gists', self.public_gists, 1, {0: 1, 4: 2, 10: 3, sys.maxsize: 4})
