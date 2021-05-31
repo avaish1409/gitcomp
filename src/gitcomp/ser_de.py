@@ -118,18 +118,21 @@ class Writer:
 
     @staticmethod
     def __get_table_transpose(g: Dict[str, Union[User, Repository]]):
-        dict_repr = Writer.__to_dict(g)
-        headers = Writer.__get_headers(dict_repr)
-        rows = Writer.__get_entries_as_rows(dict_repr)
+        headers, rows = Writer.__get_table_content(g)
         new_headers, new_rows = Writer.__get_transpose(g, rows, headers)
         return tabulate(new_rows, headers=new_headers, tablefmt='pretty')
 
     @staticmethod
     def __get_table(g: Dict[str, Union[User, Repository]]):
+        headers, rows = Writer.__get_table_content(g)
+        return tabulate(rows, headers=headers, tablefmt='plain')
+
+    @staticmethod
+    def __get_table_content(g: Dict[str, Union[User, Repository]]):
         dict_repr = Writer.__to_dict(g)
         headers = Writer.__get_headers(dict_repr)
         rows = Writer.__get_entries_as_rows(dict_repr)
-        return tabulate(rows, headers=headers, tablefmt='plain')
+        return headers, rows
 
     @staticmethod
     def __get_entries_as_rows(g: Dict[str, Any]) -> List[Any]:
@@ -141,7 +144,7 @@ class Writer:
     @staticmethod
     def __get_transpose(g: Dict[str, Union[User, Repository]], rows, headers):
         new_rows = []
-        new_headers = ['Argument'] + list(g.keys())
+        new_headers = ['Argument'] + sorted(list(g.keys()))
         for i in range(len(rows[0])):
             new_rows.append([rows[j][i] for j in range(len(rows))])
         for i in range(len(new_rows)):
