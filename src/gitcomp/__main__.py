@@ -1,5 +1,5 @@
 from .gitcomp_core import GitComp
-from .ser_de import Writer
+from .ser_de import Writer, PROP
 import argparse
 
 
@@ -62,10 +62,6 @@ def __get_arg_parser() -> argparse.ArgumentParser:
 
 
 def main():
-    propmap = {
-        'users': 'user_data',
-        'repos': 'repo_data'
-    }
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
     g = GitComp(users=args.user_names, repos=args.repo_names)
@@ -75,15 +71,15 @@ def main():
     tp = None
     out = None
     if args.user_names is not None:
-        prop = propmap['users']
+        prop = PROP['users'].value
     elif args.repo_names is not None:
-        prop = propmap['repos']
+        prop = PROP['repos'].value
     if args.out_type is not None:
         tp = args.out_type[0]
     if args.output_file is not None:
         out = args.output_file[0]
     # end cleanup
-    w = Writer(obj=g, tp=tp, out_file=out, prop=prop)
+    w = Writer(obj=g, out_type=tp, out_file=out, prop=prop)
     w.write()
 
 
