@@ -92,9 +92,9 @@ class Writer:
 
     def __to_html_table(self, g: Dict[str, Union[User, Repository]]):
         file_handle = self.__get_file_handle()
-        table_writer = self.__get_table(g)
-        table_writer.format = True
-        file_handle.write(table_writer.get_html_string(fields=self.display_rows))
+        headers, rows = self.__get_table_content(g)
+        table_writer = tabulate(rows, headers=headers, tablefmt='html')
+        file_handle.write(table_writer)
         Writer.__close_file_handle(file_handle)
 
     def __get_file_handle(self):
@@ -144,7 +144,7 @@ class Writer:
     @staticmethod
     def __get_transpose(g: Dict[str, Union[User, Repository]], rows, headers):
         new_rows = []
-        new_headers = ['Argument'] + sorted(list(g.keys()))
+        new_headers = ['Argument'] + list(g.keys())
         for i in range(len(rows[0])):
             new_rows.append([rows[j][i] for j in range(len(rows))])
         for i in range(len(new_rows)):
