@@ -44,7 +44,7 @@ class Writer:
     display_rows: List[str]
     __ascii_threshold = 4
 
-    def __init__(self, prop, obj, out_type, out_file):
+    def __init__(self, prop, obj, out_type, out_file=None):
         self.obj = obj
         self.prop = prop
         self.type = out_type
