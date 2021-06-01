@@ -44,7 +44,7 @@ class Writer:
     display_rows: List[str]
     __ascii_threshold = 4
 
-    def __init__(self, prop, obj, out_type, out_file):
+    def __init__(self, prop, obj, out_type, out_file=None):
         self.obj = obj
         self.prop = prop
         self.type = out_type
@@ -98,10 +98,9 @@ class Writer:
 
     @__writer_func
     def __to_html_table(self, g: Dict[str, Union[User, Repository]] , file_handle):
-        table_writer = self.__get_table(g)
-        table_writer.format = True
-        file_handle.write(table_writer.get_html_string(fields=self.display_rows))
-
+        headers, rows = self.__get_table_content(g)
+        table_writer = tabulate(rows, headers=headers, tablefmt='html')
+        file_handle.write(table_writer)
 
     def __get_file_handle(self):
         if self.out_file is not stdout:
@@ -124,18 +123,21 @@ class Writer:
 
     @staticmethod
     def __get_table_transpose(g: Dict[str, Union[User, Repository]]):
-        dict_repr = Writer.__to_dict(g)
-        headers = Writer.__get_headers(dict_repr)
-        rows = Writer.__get_entries_as_rows(dict_repr)
+        headers, rows = Writer.__get_table_content(g)
         new_headers, new_rows = Writer.__get_transpose(g, rows, headers)
         return tabulate(new_rows, headers=new_headers, tablefmt='pretty')
 
     @staticmethod
     def __get_table(g: Dict[str, Union[User, Repository]]):
+        headers, rows = Writer.__get_table_content(g)
+        return tabulate(rows, headers=headers, tablefmt='plain')
+
+    @staticmethod
+    def __get_table_content(g: Dict[str, Union[User, Repository]]):
         dict_repr = Writer.__to_dict(g)
         headers = Writer.__get_headers(dict_repr)
         rows = Writer.__get_entries_as_rows(dict_repr)
-        return tabulate(rows, headers=headers, tablefmt='plain')
+        return headers, rows
 
     @staticmethod
     def __get_entries_as_rows(g: Dict[str, Any]) -> List[Any]:
