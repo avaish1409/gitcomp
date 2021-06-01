@@ -66,11 +66,11 @@ class Writer:
     def __get_writer(self):
         return self.writers[self.type]
 
-    def __writer_func(writer) : 
+    def __writer_func(writer) :
         def writer_wraps(self, g : object):
             file_handle = self.__get_file_handle()
             writer(self, g, file_handle)
-            if file_handle is stdout  : 
+            if file_handle is stdout  :
                 file_handle.write('\n')
             self.__close_file_handle(file_handle)
         return writer_wraps
