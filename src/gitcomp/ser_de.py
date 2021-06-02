@@ -66,36 +66,41 @@ class Writer:
     def __get_writer(self):
         return self.writers[self.type]
 
-    def __to_json(self, g: object):
-        file_handle = self.__get_file_handle()
-        json.dump(g, file_handle, cls=Serializer, indent=4, sort_keys=True)
-        self.__close_file_handle(file_handle)
+    def __writer_func(writer) :
+        def writer_wraps(self, g : object):
+            file_handle = self.__get_file_handle()
+            writer(self, g, file_handle)
+            if file_handle is stdout  :
+                file_handle.write('\n')
+            self.__close_file_handle(file_handle)
+        return writer_wraps
 
-    def __to_csv(self, g: object):
-        file_handle = self.__get_file_handle()
+    @__writer_func
+    def __to_json(self, g: object , file_handle):
+        json.dump(g, file_handle, cls=Serializer, indent=4, sort_keys=True)
+
+    @__writer_func
+    def __to_csv(self, g: object , file_handle):
         dict_obj = Writer.__to_dict(g)
         headers = Writer.__get_headers(dict_obj)
         writer = csv.DictWriter(file_handle, fieldnames=headers)
         writer.writeheader()
         for entry in dict_obj.keys():
             writer.writerow(dict_obj[entry])
-        Writer.__close_file_handle(file_handle)
 
-    def __to_ascii_table(self, g: Dict[str, Union[User, Repository]]):
-        file_handle = self.__get_file_handle()
+    @__writer_func
+    def __to_ascii_table(self, g: Dict[str, Union[User, Repository]] , file_handle):
         if len(g.keys()) < Writer.__ascii_threshold:
             table_writer = self.__get_table_transpose(g)
         else:
             table_writer = self.__get_table(g)
         file_handle.write(table_writer)
-        Writer.__close_file_handle(file_handle)
 
-    def __to_html_table(self, g: Dict[str, Union[User, Repository]]):
-        file_handle = self.__get_file_handle()
+    @__writer_func
+    def __to_html_table(self, g: Dict[str, Union[User, Repository]] , file_handle):
         headers, rows = self.__get_table_content(g)
         table_writer = tabulate(rows, headers=headers, tablefmt='html')
         file_handle.write(table_writer)
-        Writer.__close_file_handle(file_handle)
 
     def __get_file_handle(self):
         if self.out_file is not stdout:
