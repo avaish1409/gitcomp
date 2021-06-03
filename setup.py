@@ -35,6 +35,6 @@ setup(
     ],
     keywords='command-line-tools cli gitcomp python package compare git github',
     install_requires=requirements,
-    python_requires=">=3",
+    python_requires=">=3.6",
     zip_safe=False
 )
