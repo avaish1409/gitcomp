@@ -40,7 +40,6 @@ def writer_wrapper(writer):
         writer(ref, g)
         if ref.file_handle is stdout:
             ref.file_handle.write('\n')
-        ref.close_file_handle()
 
     return wrapper
 
@@ -69,6 +68,10 @@ class Writer:
         if out_file is not None:
             self.out_file = out_file
             self.file_handle = open(out_file, 'w')
+
+    def __del__(self):
+        if self.file_handle is not stdout:
+            self.file_handle.close()
 
     def write(self):
         writer = self.__get_writer()
@@ -104,10 +107,6 @@ class Writer:
         headers, rows = self.__get_table_content(g)
         table_writer = tabulate(rows, headers=headers, tablefmt='html')
         self.file_handle.write(table_writer)
-
-    def close_file_handle(self):
-        if self.file_handle is not stdout:
-            self.file_handle.close()
 
     @staticmethod
     def __to_dict(g: object) -> Dict[str, Any]:
