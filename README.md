@@ -81,7 +81,7 @@ gitcomp -u Rohitrajak1807 avaish1409 -t html
 gitcomp -u Rohitrajak1807 avaish1409 -t json -o res.json
 ```
 ```shell
-gitcomp -u Rohitrajak1807 avaish1409 -t csv -o csv.json
+gitcomp -u Rohitrajak1807 avaish1409 -t csv -o res.csv
 ```
 ```shell
 gitcomp -u Rohitrajak1807 avaish1409 -t html -o res.html
