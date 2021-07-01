@@ -96,10 +96,11 @@ class Writer:
 
     @writer_wrapper
     def __to_ascii_table(self, g: Dict[str, Union[User, Repository]]):
+        headers, rows = Writer.__get_table_content(g)
         if len(g.keys()) < Writer.__ascii_threshold:
-            table_writer = self.__get_table_transpose(g)
+            table_writer = self.__get_table_transpose(g, headers, rows)
         else:
-            table_writer = self.__get_table(g)
+            table_writer = self.__get_table(headers, rows)
         self.file_handle.write(table_writer)
 
     @writer_wrapper
@@ -118,14 +119,12 @@ class Writer:
         return list(g[members[0]].keys())
 
     @staticmethod
-    def __get_table_transpose(g: Dict[str, Union[User, Repository]]):
-        headers, rows = Writer.__get_table_content(g)
+    def __get_table_transpose(g: Dict[str, Union[User, Repository]], headers: List[str], rows: List[str]):
         new_headers, new_rows = Writer.__get_transpose(g, rows, headers)
         return tabulate(new_rows, headers=new_headers, tablefmt='pretty')
 
     @staticmethod
-    def __get_table(g: Dict[str, Union[User, Repository]]):
-        headers, rows = Writer.__get_table_content(g)
+    def __get_table(headers: List[str], rows: List[str]):
         return tabulate(rows, headers=headers, tablefmt='plain')
 
     @staticmethod
@@ -145,7 +144,7 @@ class Writer:
     @staticmethod
     def __get_transpose(g: Dict[str, Union[User, Repository]], rows, headers):
         new_rows = []
-        new_headers = ['Argument'] + list(g.keys())
+        new_headers = [' '] + list(g.keys())
         for i in range(len(rows[0])):
             new_rows.append([rows[j][i] for j in range(len(rows))])
         for i in range(len(new_rows)):
