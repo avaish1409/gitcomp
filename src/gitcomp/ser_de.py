@@ -58,7 +58,7 @@ class Writer:
         self.obj = obj
         self.prop = prop
         self.type = out_type
-        self.display_rows = FIELD[prop].value.display_rows
+        self.display_rows = sorted(FIELD[prop].value.display_rows)
         self.writers = {
             'json': self.__to_json,
             'csv': self.__to_csv,
@@ -96,7 +96,7 @@ class Writer:
 
     @writer_wrapper
     def __to_ascii_table(self, g: Dict[str, Union[User, Repository]]):
-        headers, rows = Writer.__get_table_content(g)
+        headers, rows = self.__get_table_content(g)
         if len(g.keys()) < Writer.__ascii_threshold:
             table_writer = self.__get_table_transpose(g, headers, rows)
         else:
@@ -127,9 +127,11 @@ class Writer:
     def __get_table(headers: List[str], rows: List[str]):
         return tabulate(rows, headers=headers, tablefmt='plain')
 
-    @staticmethod
-    def __get_table_content(g: Dict[str, Union[User, Repository]]):
+    def __get_table_content(self, g: Dict[str, Union[User, Repository]]):
         dict_repr = Writer.__to_dict(g)
+        if self.out_file is stdout and self.type == 'ascii':
+            dict_repr = self.__summarize(dict_repr)
+        print(dict_repr)
         headers = Writer.__get_headers(dict_repr)
         rows = Writer.__get_entries_as_rows(dict_repr)
         return headers, rows
@@ -150,3 +152,9 @@ class Writer:
         for i in range(len(new_rows)):
             new_rows[i] = [headers[i]] + new_rows[i]
         return new_headers, new_rows
+
+    def __summarize(self, dict_repr: Dict[str, Any]):
+        summary = {}
+        for entry in dict_repr:
+            summary[entry] = {k: dict_repr[entry][k] for k in self.display_rows}
+        return summary
