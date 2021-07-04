@@ -24,12 +24,12 @@ class NetMod:
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = super().__new__(cls)
+            cls._instance = super(NetMod, cls).__new__(cls)
         return cls._instance
 
     def __init__(self):
         self._pool = HTTPSConnectionPool(host=NetMod.__api_base, maxsize=NetMod.__pool_size, headers=NetMod.__headers,
-                                         timeout=NetMod.__timeout, port=NetMod.__port)
+                                         timeout=NetMod.__timeout, port=NetMod.__port, block=True)
 
     def make_request(self, method: str, api_route: str) -> HTTPResponse:
         return self._pool.request(method, api_route)
