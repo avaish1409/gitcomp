@@ -26,7 +26,7 @@ class Repository:
     subscribers_count: int
     git_score: int
     license: str = None
-    display_rows = ['full_name', 'forks', 'open_issues', 'watches', 'network_count', 'subscribers_count', 'git_score']
+    display_rows = ['forks', 'open_issues', 'watches', 'network_count', 'subscribers_count', 'git_score']
     __date_fmt = '%Y-%m-%dT%H:%M:%SZ'
     __total_weight = 100 / 16
 
