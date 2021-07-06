@@ -1,20 +1,11 @@
-import json
 import re
-import urllib.request
 from .user import User
 from .repository import Repository
 from typing import List, Dict
+from .net_mod import NetMod
 
 
 class GitComp:
-    __api_base: str = 'https://api.github.com/'
-    """
-    explicitly request v3 of the API
-    https://docs.github.com/en/rest/overview/resources-in-the-rest-api#current-version
-    """
-    __headers: Dict[str, str] = {
-        'Accept': 'application/vnd.github.v3+json'
-    }
     users: List[str]
     repos: List[str]
     user_data: Dict[str, User] = None
@@ -35,10 +26,9 @@ class GitComp:
 
     def __fetch_user_data(self):
         self.__validate_user_names()
-        api_route = 'users/'
-        for user in self.users:
-            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{user}', headers=GitComp.__headers)
-            self.user_data[user] = User(GitComp.__make_request(request=req))
+        response = NetMod().fetch_users_data(self.users)
+        for user in response:
+            self.user_data[user] = User(response[user])
 
     def __validate_user_names(self):
         for user in self.users:
@@ -48,11 +38,10 @@ class GitComp:
                 """)
 
     def __fetch_repo_data(self):
-        api_route = 'repos/'
         self.__validate_repo_string()
-        for repo in self.repos:
-            req = urllib.request.Request(url=f'{self.__api_base}{api_route}{repo}', headers=GitComp.__headers)
-            self.repo_data[repo] = Repository(GitComp.__make_request(request=req))
+        response = NetMod().fetch_repos_data(self.repos)
+        for repo in response:
+            self.repo_data[repo] = Repository(response[repo])
 
     def __validate_repo_string(self):
         for repo in self.repos:
@@ -61,9 +50,3 @@ class GitComp:
                 Improper repository format.
                 Provide the repository name as: <user-name>/<repository-name>
                 """)
-
-    @staticmethod
-    def __make_request(request: urllib.request.Request):
-        with urllib.request.urlopen(request) as req:
-            data = json.loads(req.read().decode())
-            return data

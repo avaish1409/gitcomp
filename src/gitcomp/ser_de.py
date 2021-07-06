@@ -131,7 +131,6 @@ class Writer:
         dict_repr = Writer.__to_dict(g)
         if self.out_file is stdout and self.type == 'ascii':
             dict_repr = self.__summarize(dict_repr)
-        print(dict_repr)
         headers = Writer.__get_headers(dict_repr)
         rows = Writer.__get_entries_as_rows(dict_repr)
         return headers, rows
