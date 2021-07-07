@@ -25,11 +25,11 @@ class NetMod:
         'User-Agent': 'Python-urllib/3',
         'Authorization': ''
     }
+
     """
     referenced from
     https://python-patterns.guide/gang-of-four/singleton/
     """
-
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super(NetMod, cls).__new__(cls)
