@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ThreadPoolExecutor, Future
 from urllib3.connectionpool import HTTPSConnectionPool, HTTPResponse
 from typing import Dict, List, Any
 from string import Template
@@ -21,7 +22,8 @@ class NetMod:
     """
     __headers: Dict[str, str] = {
         'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'Python-urllib/3'
+        'User-Agent': 'Python-urllib/3',
+        'Authorization': ''
     }
     """
     referenced from
@@ -41,22 +43,24 @@ class NetMod:
         return self._pool.request(method, api_route)
 
     def fetch_repos_data(self, repos: List[str]) -> Dict[str, Any]:
-        results = {}
-        for repo in repos:
-            api_route = self.__repo_route.substitute(repo=repo)
-            results[repo] = self.__fetch_one_and_decode(api_route)
-        return results
+        api_routes = [self.__user_route.substitute(repo=repo) for repo in repos]
+        return self.__fetch_all__concurrent(repos, api_routes)
 
     def fetch_users_data(self, users: List[str]) -> Dict[str, Any]:
-        results = {}
-        for user in users:
-            api_route = self.__user_route.substitute(user=user)
-            results[user] = self.__fetch_one_and_decode(api_route)
-        return results
+        api_routes = [self.__user_route.substitute(user=user) for user in users]
+        return self.__fetch_all__concurrent(users, api_routes)
 
     def fetch_org_data(self, user: str) -> Dict[str, Any]:
         api_route = self.__org_route.substitute(user=user)
         return self.__fetch_one_and_decode(api_route)
+
+    def __fetch_all__concurrent(self, entries: List[str], api_routes: List[str]) -> Dict[str, Any]:
+        max_workers = max(len(entries), self.__pool_size)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            res: Dict[str, Future[Dict[str, Any]]] = {entry: executor.submit(self.__fetch_one_and_decode, route) for
+                                                      entry, route in
+                                                      zip(entries, api_routes)}
+        return {user: data.result() for user, data in res.items()}
 
     def __fetch_one_and_decode(self, api_route: str) -> Dict[str, Any]:
         res = self.__make_request(api_route)
