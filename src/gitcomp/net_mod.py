@@ -7,7 +7,7 @@ from string import Template
 
 class NetMod:
     _instance = None
-    _pool: HTTPSConnectionPool
+    __pool: HTTPSConnectionPool
     __pool_size: int = 5
     __api_base: str = 'api.github.com'
     __port: int = 443
@@ -36,14 +36,14 @@ class NetMod:
         return cls._instance
 
     def __init__(self):
-        self._pool = HTTPSConnectionPool(host=NetMod.__api_base, maxsize=NetMod.__pool_size, headers=NetMod.__headers,
-                                         timeout=NetMod.__timeout, port=NetMod.__port, block=True)
+        self.__pool = HTTPSConnectionPool(host=NetMod.__api_base, maxsize=NetMod.__pool_size, headers=NetMod.__headers,
+                                          timeout=NetMod.__timeout, port=NetMod.__port, block=True)
 
     def __make_request(self, api_route: str, method: str = 'get') -> HTTPResponse:
-        return self._pool.request(method, api_route)
+        return self.__pool.request(method, api_route)
 
     def fetch_repos_data(self, repos: List[str]) -> Dict[str, Any]:
-        api_routes = [self.__user_route.substitute(repo=repo) for repo in repos]
+        api_routes = [self.__repo_route.substitute(repo=repo) for repo in repos]
         return self.__fetch_all__concurrent(repos, api_routes)
 
     def fetch_users_data(self, users: List[str]) -> Dict[str, Any]:
