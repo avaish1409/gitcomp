@@ -68,7 +68,7 @@ def safe_exit(parser: argparse.ArgumentParser):
 def main():
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    if args.user_names is None and args.repo_names is None:
+    if len(args.user_names) == len(args.repo_names) == 0:
         safe_exit(arg_parser)
     users = list(set(args.user_names)) or None
     repos = list((set(args.repo_names))) or None
