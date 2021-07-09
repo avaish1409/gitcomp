@@ -42,12 +42,13 @@ class NetMod:
         self.__pool = HTTPSConnectionPool(host=NetMod.__api_base, maxsize=NetMod.__pool_size, headers=NetMod.__headers,
                                           timeout=NetMod.__timeout, port=NetMod.__port, block=True)
 
-    def __make_request(self, api_route: str, method: str = 'get') -> HTTPResponse:
+    def __make_request(self, api_route: str, method: str = 'get') -> Dict[str, Any]:
         try:
-            response: HTTPResponse = self.__pool.request(method, api_route, redirect=True)
+            response: HTTPResponse = self.__pool.request(method, api_route, release_conn=True, redirect=True)
+            res_data = json.loads(response.data)
             if response.status != 200:
-                raise HTTPError(response.status, json.loads(response.data))
-            return response
+                raise HTTPError(response.status, res_data['message'])
+            return res_data
         except (NewConnectionError, MaxRetryError):
             sys.exit("""Failed to connect. Exiting...""")
         except HTTPError as err:
@@ -63,16 +64,12 @@ class NetMod:
 
     def fetch_org_data(self, user: str) -> Dict[str, Any]:
         api_route = self.__org_route.substitute(user=user)
-        return self.__fetch_one_and_decode(api_route)
+        return self.__make_request(api_route)
 
     def __fetch_all__concurrent(self, entries: List[str], api_routes: List[str]) -> Dict[str, Any]:
         max_workers = max(len(entries), self.__pool_size)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            res: Dict[str, Future[Dict[str, Any]]] = {entry: executor.submit(self.__fetch_one_and_decode, route) for
+            res: Dict[str, Future[Dict[str, Any]]] = {entry: executor.submit(self.__make_request, route) for
                                                       entry, route in
                                                       zip(entries, api_routes)}
         return {user: data.result() for user, data in res.items()}
-
-    def __fetch_one_and_decode(self, api_route: str) -> Dict[str, Any]:
-        res = self.__make_request(api_route)
-        return json.loads(res.data)
