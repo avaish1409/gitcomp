@@ -1,7 +1,8 @@
 import json
+import sys
 from concurrent.futures import ThreadPoolExecutor, Future
 from urllib3.connectionpool import HTTPSConnectionPool, HTTPResponse
-from urllib3.exceptions import NewConnectionError, MaxRetryError
+from urllib3.exceptions import NewConnectionError, MaxRetryError, HTTPError
 from typing import Dict, List, Any
 from string import Template
 
@@ -43,12 +44,14 @@ class NetMod:
 
     def __make_request(self, api_route: str, method: str = 'get') -> HTTPResponse:
         try:
-            response = self.__pool.request(method, api_route, redirect=True)
-        except (NewConnectionError, MaxRetryError):
-            print("""Failed to connect. Exiting...""")
-            exit(1)
-        else:
+            response: HTTPResponse = self.__pool.request(method, api_route, redirect=True)
+            if response.status != 200:
+                raise HTTPError(response.status, json.loads(response.data))
             return response
+        except (NewConnectionError, MaxRetryError):
+            sys.exit("""Failed to connect. Exiting...""")
+        except HTTPError as err:
+            sys.exit(err)
 
     def fetch_repos_data(self, repos: List[str]) -> Dict[str, Any]:
         api_routes = [self.__repo_route.substitute(repo=repo) for repo in repos]
