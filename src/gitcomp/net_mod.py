@@ -1,6 +1,7 @@
 import json
 from concurrent.futures import ThreadPoolExecutor, Future
 from urllib3.connectionpool import HTTPSConnectionPool, HTTPResponse
+from urllib3.exceptions import NewConnectionError, MaxRetryError
 from typing import Dict, List, Any
 from string import Template
 
@@ -30,6 +31,7 @@ class NetMod:
     referenced from
     https://python-patterns.guide/gang-of-four/singleton/
     """
+
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super(NetMod, cls).__new__(cls)
@@ -40,7 +42,13 @@ class NetMod:
                                           timeout=NetMod.__timeout, port=NetMod.__port, block=True)
 
     def __make_request(self, api_route: str, method: str = 'get') -> HTTPResponse:
-        return self.__pool.request(method, api_route)
+        try:
+            response = self.__pool.request(method, api_route, redirect=True)
+        except (NewConnectionError, MaxRetryError):
+            print("""Failed to connect. Exiting...""")
+            exit(1)
+        else:
+            return response
 
     def fetch_repos_data(self, repos: List[str]) -> Dict[str, Any]:
         api_routes = [self.__repo_route.substitute(repo=repo) for repo in repos]
