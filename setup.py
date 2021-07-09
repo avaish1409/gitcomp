@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='gitcomp',
-    version='1.0.1',
+    version='1.0.4',
     author='Anirudh Vaish',
     author_email='anirudhvaish147@gmail.com',
     url='https://github.com/avaish1409/gitcomp',
