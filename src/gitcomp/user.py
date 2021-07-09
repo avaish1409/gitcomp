@@ -1,6 +1,5 @@
-import json
-import urllib.request
 from dataclasses import dataclass
+from .net_mod import NetMod
 import sys
 
 
@@ -37,15 +36,12 @@ class User:
         self.location = user_data['location']
         self.public_repos = user_data['public_repos']
         self.public_gists = user_data['public_gists']
-        self.organizations = self.__get_orgs_len(user_data['organizations_url'])
+        self.organizations = self.__get_orgs_len()
         self.git_score = self.get_score()
 
-    @staticmethod
-    def __get_orgs_len(url: str):
-        api_end_point = url
-        with urllib.request.urlopen(api_end_point) as req:
-            data = json.loads(req.read().decode())
-            return len(data)
+    def __get_orgs_len(self):
+        response = NetMod().fetch_org_data(self.login)
+        return len(response)
 
     def feature_score(self, name, val, weight=1, metric={}):
         fscore = 0
