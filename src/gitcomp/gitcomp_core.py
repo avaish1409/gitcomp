@@ -16,6 +16,7 @@ class GitComp:
     # https://regex101.com/r/sYIEPE/2
     __username_regex: Pattern = re.compile(r'^([A-Za-z0-9])([A-Za-z0-9]*)(-)?([A-Za-z0-9]*)([A-Za-z0-9]$)')
     # Repository names are currently limited to 100 characters, some special names like . are reserved
+    # https://regex101.com/r/ibfDFk/2
     __repo_regex: Pattern = re.compile(
         r'^([A-Za-z0-9])([A-Za-z0-9]*)(-)?([A-Za-z0-9]*)([A-Za-z0-9])(/)((?=[^.])([^!#@%^&+=()]*)$|((\.+)(['
         r'^!#@%^&+=()]+)$))')
