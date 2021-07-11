@@ -17,7 +17,7 @@ class GitComp:
     __username_regex: Pattern = re.compile(r'^([A-Za-z0-9])([A-Za-z0-9]*)(-)?([A-Za-z0-9]*)([A-Za-z0-9]$)')
     # Repository names are currently limited to 100 characters, some special names like . are reserved
     __repo_regex: Pattern = re.compile(
-        r'^([A-Za-z0-9])([A-Za-z0-9]*)(-)?([A-Za-z0-9]*)([A-Za-z0-9])(/)((?=[^.])([^!#@%^&+=()]*)$|((\.{3,})(['
+        r'^([A-Za-z0-9])([A-Za-z0-9]*)(-)?([A-Za-z0-9]*)([A-Za-z0-9])(/)((?=[^.])([^!#@%^&+=()]*)$|((\.+)(['
         r'^!#@%^&+=()]+)$))')
 
     def __init__(self, users: List[str] = None, repos: List[str] = None):
