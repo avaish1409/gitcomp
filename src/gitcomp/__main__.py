@@ -20,7 +20,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
     mutually_exclusive = parser.add_mutually_exclusive_group()
 
     mutually_exclusive.add_argument('-u', '--user', type=str, nargs='+',
-                                    metavar='user_name', default=None, dest='user_names',
+                                    metavar='user_name', default=[], dest='user_names',
                                     help='''
                                          -u, --user <username...>
                                          The GitHub username(s) to query against.
@@ -29,7 +29,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                                          ''')
 
     mutually_exclusive.add_argument('-r', '--repo', type=str, nargs='+',
-                                    metavar='repo', default=None, dest='repo_names',
+                                    metavar='repo', default=[], dest='repo_names',
                                     help='''
                                          -r, --repo <repo>
                                          The public GitHub repository to query against where repo takes the form:
@@ -69,18 +69,19 @@ def safe_exit(parser: argparse.ArgumentParser):
 def main():
     arg_parser = __get_arg_parser()
     args = arg_parser.parse_args()
-    if args.user_names is None and args.repo_names is None:
+    if len(args.user_names) == len(args.repo_names) == 0:
         safe_exit(arg_parser)
-    g = GitComp(users=args.user_names, repos=args.repo_names)
+    users = list(set(args.user_names)) or None
+    repos = list((set(args.repo_names))) or None
+    g = GitComp(users=users, repos=repos)
     prop = None
-    if args.user_names is not None:
+    if users is not None:
         prop = PROP['users'].value
-    elif args.repo_names is not None:
+    elif repos is not None:
         prop = PROP['repos'].value
-    tp = args.out_type[0]
-    out = args.output_file[0]
-    w = Writer(obj=g, out_type=tp, out_file=out, prop=prop)
-    w.write()
+    out_type = args.out_type[0]
+    out_file = args.output_file[0]
+    Writer(obj=g, out_type=out_type, out_file=out_file, prop=prop).write()
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ number of stars and number of watchers**.
 [![Python 3](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![PyPi Download stats](http://pepy.tech/badge/gitcomp)](http://pepy.tech/project/gitcomp)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/avaish1409/gitcomp/releases)
+[![version](https://img.shields.io/badge/version-1.0.1-blue)](https://github.com/avaish1409/gitcomp/releases)
 
 
 # Installation
@@ -81,7 +81,7 @@ gitcomp -u Rohitrajak1807 avaish1409 -t html
 gitcomp -u Rohitrajak1807 avaish1409 -t json -o res.json
 ```
 ```shell
-gitcomp -u Rohitrajak1807 avaish1409 -t csv -o csv.json
+gitcomp -u Rohitrajak1807 avaish1409 -t csv -o res.csv
 ```
 ```shell
 gitcomp -u Rohitrajak1807 avaish1409 -t html -o res.html
