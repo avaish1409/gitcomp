@@ -55,8 +55,7 @@ def __get_arg_parser() -> argparse.ArgumentParser:
                         help='''
                             -o, --output <out_file>
                             Output to out_file, defaults to STDOUT.
-                        '''
-                        )
+                        ''')
 
     return parser
 
