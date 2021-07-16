@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 requirements = [
     'tabulate == 0.8.9',
-    'urllib3 == 1.25.8',
+    'urllib3 == 1.26.5',
     'wcwidth == 0.1.8'
 ]
 
