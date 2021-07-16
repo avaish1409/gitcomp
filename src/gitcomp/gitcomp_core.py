@@ -43,7 +43,7 @@ class GitComp:
 
     def __validate_user_names(self):
         for user in self.users:
-            if not GitComp.__username_regex.fullmatch(user) is None:
+            if not GitComp.__username_regex.fullmatch(user):
                 raise ValueError(f"""
                 Improper username {user} 
                 """)
@@ -61,7 +61,6 @@ class GitComp:
     def __validate_repo_string(self):
         for repo in self.repos:
             if not GitComp.__repo_regex.fullmatch(repo):
-                print(re.match(GitComp.__repo_regex, repo))
                 raise ValueError("""
                 Improper repository format.
                 Provide the repository name as: <user-name>/<repository-name>
