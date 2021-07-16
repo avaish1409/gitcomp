@@ -1,14 +1,10 @@
 from setuptools import setup, find_packages
 
-try:
-    with open('requirements.txt') as f:
-        requirements = f.readlines()
-except FileNotFoundError:
-    requirements = [
-        'tabulate == 0.8.9',
-        'urllib3 == 1.25.8',
-        'wcwidth == 0.1.8'
-    ]
+requirements = [
+    'tabulate == 0.8.9',
+    'urllib3 == 1.25.8',
+    'wcwidth == 0.1.8'
+]
 
 with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
