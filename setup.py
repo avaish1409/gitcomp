@@ -1,9 +1,16 @@
 from setuptools import setup, find_packages
 
-with open('requirements.txt') as f:
-    requirements = f.readlines()
+try:
+    with open('requirements.txt') as f:
+        requirements = f.readlines()
+except FileNotFoundError:
+    requirements = [
+        'tabulate == 0.8.9',
+        'urllib3 == 1.25.8',
+        'wcwidth == 0.1.8'
+    ]
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 setup(
@@ -14,27 +21,27 @@ setup(
     url='https://github.com/avaish1409/gitcomp',
     description='A python based command line tool to compare Github Users or Repositories.',
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type='text/markdown',
     license='MIT',
-    package_dir={"": "src"},
-    packages=find_packages(where="src"),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
     entry_points={
         'console_scripts': [
             'gitcomp = gitcomp.__main__:main'
         ]
     },
     project_urls={
-        "Bug Tracker": "https://github.com/avaish1409/gitcomp/issues",
+        'Bug Tracker': 'https://github.com/avaish1409/gitcomp/issues',
         'Documentation': 'https://avaish1409.github.io/gitcomp/',
         'Source': 'https://github.com/avaish1409/gitcomp'
     },
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
     ],
     keywords='command-line-tools cli gitcomp python package compare git github',
     install_requires=requirements,
-    python_requires=">=3.6",
+    python_requires='>=3.6',
     zip_safe=False
 )

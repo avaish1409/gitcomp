@@ -4,3 +4,7 @@ venv/
 __pycache__
 *.pyc
 *.egg-info
+.tox
+dist
+build
+gitcomp.egg-info
